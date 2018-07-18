@@ -47,8 +47,7 @@ namespace Movier_Git.Classes
 		{
 			int prefixLength = Global.longPrefix.Length;   // 25
 			int index_of_noLetter = IndexOfNoLetter(address, prefixLength);
-			string lastSequence = "";
-			lastSequence = index_of_noLetter < 1 ? address.Substring(prefixLength, address.Length - prefixLength) : address.Substring(prefixLength, index_of_noLetter - prefixLength);
+			string lastSequence = index_of_noLetter < 1 ? address.Substring(prefixLength, address.Length - prefixLength) : address.Substring(prefixLength, index_of_noLetter - prefixLength);
 			return lastSequence;
 		}
 
@@ -65,19 +64,17 @@ namespace Movier_Git.Classes
 			if (!version.Contains("wersja"))
 				return "OneVersionMovie";
 
-			int last_index, length;
 			string versionName = "";
-			last_index = version.LastIndexOf('=') + 1;
-			length = version.Length;
-			versionName = version.Substring(last_index, length - last_index);
+			int last_index = version.LastIndexOf('=') + 1;
+			versionName = version.Substring(last_index, version.Length - last_index);
 
 			return versionName;
 		}
 
-		static public IDictionary<char, char> GetDictionary()
+		static public IDictionary<char, char> GetDictionaryWithCode()
 		{
 			string alphabet = "", alphabet_encoded = "";
-			IDictionary<char, char> vocabulary = new Dictionary<char, char>();
+			IDictionary<char, char> vocabularyCode = new Dictionary<char, char>();
 
 			for (int i = 65; i <= 122; i++)
 			{
@@ -94,8 +91,9 @@ namespace Movier_Git.Classes
 				alphabet_encoded += c2;
 			}
 			for (int i = 0; i < alphabet_encoded.Length; i++)
-				vocabulary[alphabet[i]] = alphabet_encoded[i];
-			return vocabulary;
+				vocabularyCode[alphabet[i]] = alphabet_encoded[i];
+
+			return vocabularyCode;
 		}
 
 		static public string RemoveSubstring(string word, int start_index, int length)
@@ -105,9 +103,9 @@ namespace Movier_Git.Classes
 			return first_part + second_part;
 		}
 
-		static public string DecodeOne(string text)
+		static public string DecodeOneVersion(string text)
 		{
-			IDictionary<char, char> alphabet = GetDictionary();
+			IDictionary<char, char> alphabet = GetDictionaryWithCode();
 			string result = "";
 
 			foreach (char letter in text)
@@ -121,11 +119,12 @@ namespace Movier_Git.Classes
 		{
 			if (!File.Exists(fileName))
 				return null;
-			ApplicationSettings obiekt = new ApplicationSettings();
+			ApplicationSettings applicationSettings = new ApplicationSettings();
 			XmlSerializer xmlSerializer = new XmlSerializer(typeof(ApplicationSettings));
 			using (Stream stream = File.OpenRead(fileName))
-				obiekt = (ApplicationSettings)xmlSerializer.Deserialize(stream);
-			return obiekt;
+				applicationSettings = (ApplicationSettings)xmlSerializer.Deserialize(stream);
+
+			return applicationSettings;
 		}
 
 		//private static void Serialize<T>(T obiekt, string fileName)

@@ -70,21 +70,21 @@ namespace Movier_Git
 				return;
 
 			string[] lines = page.Split('"').Where(a => a.StartsWith(Global.longPrefix)).Distinct().ToArray();
-			string[] versions = lines.Where(a => a.Contains("wersja") && a.Length < 55).Distinct().ToArray();
+			string[] allVersions = lines.Where(a => a.Contains("wersja") && a.Length < 55).Distinct().ToArray();
 
-			if (versions.Length < 1)
+			if (allVersions.Length < 1)
 			{
 				string[] incomplete_versions = page.Split('"').Where(a => a.StartsWith("/video") && a.Contains("wersja") && a.Length < 35).Distinct().ToArray();
-				versions = incomplete_versions.Select(a => a = Global.shortPrefix + a).ToArray();
-				if (versions.Length < 1)
+				allVersions = incomplete_versions.Select(a => a = Global.shortPrefix + a).ToArray();
+				if (allVersions.Length < 1)
 				{
 					string filmCode = Extensions.GetAddressLastSequence(Address_portal_tb.Text);
-					versions = lines.Where(a => a.StartsWith(Global.longPrefix) && a.Contains(filmCode) && a.Length < 55).Distinct().ToArray();
-					if (versions.Length < 1)
+					allVersions = lines.Where(a => a.StartsWith(Global.longPrefix) && a.Contains(filmCode) && a.Length < 55).Distinct().ToArray();
+					if (allVersions.Length < 1)
 						return;
 				}
 			}
-			await GetCryptoVersions(versions);
+			await GetCryptoVersions(allVersions);
 		}
 
 		async Task GetCryptoVersions(string[] versions)
@@ -97,7 +97,7 @@ namespace Movier_Git
 				if (addresses.Length < 1)
 					continue;
 				string crypto_address = addresses.First().Replace("\\/", "/");
-				string decode_address = Extensions.DecodeOne(crypto_address);
+				string decode_address = Extensions.DecodeOneVersion(crypto_address);
 				string name = Extensions.SetVersionsNames(one_version);
 				movie.versions.Add(new Version(name, one_version, crypto_address, decode_address));
 			}
@@ -135,12 +135,11 @@ namespace Movier_Git
 
 		private void Open_bt_Click(object sender, RoutedEventArgs e)
 		{
-			foreach (RadioButton rb in StackPanel1.Children)
+			foreach (RadioButton radioButton in StackPanel1.Children)
 			{
-				if (rb.IsChecked.Value)
+				if (radioButton.IsChecked.Value)
 				{
-					string temp = rb.Content.ToString();
-					string film = movie.versions.Where(x => x.Name == temp).First().DecodeVersion;
+					string film = movie.versions.Where(x => x.Name == radioButton.Content.ToString()).First().DecodeVersion;
 					Extensions.OpenFilm(film, applicationSettings.Programs);
 					return;
 				}
@@ -149,12 +148,11 @@ namespace Movier_Git
 
 		private void Copy_bt_Click(object sender, RoutedEventArgs e)
 		{
-			foreach (RadioButton rb in StackPanel1.Children)
+			foreach (RadioButton radioButton in StackPanel1.Children)
 			{
-				if (rb.IsChecked.Value)
+				if (radioButton.IsChecked.Value)
 				{
-					string rb_content = rb.Content.ToString();
-					string film = movie.versions.Where(x => x.Name == rb_content).First().DecodeVersion;
+					string film = movie.versions.Where(x => x.Name == radioButton.Content.ToString()).First().DecodeVersion;
 					Clipboard.SetText(film);
 					return;
 				}
