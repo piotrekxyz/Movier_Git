@@ -5,8 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Movier_Git"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+        Title="Movier Git" Height="280" Width="465">
+	<Grid x:Name="MyGrid" Background="#FF78876E">
+		<Button x:Name="Go_bt" Content="2. Go!" HorizontalAlignment="Left" Margin="210,15,0,0" VerticalAlignment="Top" Width="106" Click="Go_bt_Click"/>
+		<Button x:Name="Otworz_bt" Content="3. Otwórz" HorizontalAlignment="Left" Margin="210,91,0,0" VerticalAlignment="Top" Width="75" Click="Open_bt_Click"/>
+		<StackPanel x:Name="StackPanel1" HorizontalAlignment="Left" Height="161" Margin="10,74,0,0" VerticalAlignment="Top" Width="186" Visibility="Visible"/>
+		<TextBox x:Name="Address_portal_tb" HorizontalAlignment="Left" Height="23" Margin="10,46,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="430.094"/>
+		<Button x:Name="Paste_bt" Content="1. Wklej adres filmu ze schowka" HorizontalAlignment="Left" Margin="10,15,0,0" VerticalAlignment="Top" Width="186" Click="Paste_bt_Click"/>
+		<Label x:Name="Info_lb" Content="" HorizontalAlignment="Left" Margin="210,158,0,0" VerticalAlignment="Top" Width="157" Height="40"/>
+		<Button x:Name="Copy_bt" Content="Kopiuj do schowka" HorizontalAlignment="Left" Margin="210,116,0,0" VerticalAlignment="Top" Width="126" Click="Copy_bt_Click"/>
+	</Grid>
 </Window>
