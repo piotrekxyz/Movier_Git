@@ -43,7 +43,7 @@ namespace MovierGit.Classes
 
 		public static string GetAddressLastSequence(string address)
 		{
-			var prefixLength = Global.LongPrefix.Length;   // 25
+			var prefixLength = Global.LongPrefix.Length;		// 25
 			var indexOfNoLetter = IndexOfNoLetter(address, prefixLength);
 			var lastSequence = indexOfNoLetter < 1
 				? address.Substring(prefixLength, address.Length - prefixLength)
@@ -85,9 +85,9 @@ namespace MovierGit.Classes
 					shiftInAscii = -13;
 
 				var j = i + shiftInAscii;
-				var c = (char)i;
+				var c = (char) i;
 				alphabet += c;
-				var c2 = (char)j;
+				var c2 = (char) j;
 				alphabetEncoded += c2;
 			}
 			for (var i = 0; i < alphabetEncoded.Length; i++)
@@ -122,14 +122,14 @@ namespace MovierGit.Classes
 			ApplicationSettings applicationSettings;
 			var xmlSerializer = new XmlSerializer(typeof(ApplicationSettings));
 			using (Stream stream = File.OpenRead(fileName))
-				applicationSettings = (ApplicationSettings)xmlSerializer.Deserialize(stream);
+				applicationSettings = (ApplicationSettings) xmlSerializer.Deserialize(stream);
 
 			return applicationSettings;
 		}
 
 		//private static void Serialize<T>(T obiekt, string fileName)
 		//{
-		//	XmlSerializer xmlSerializer = new XmlSerializer(typeof(T));
+		//	var xmlSerializer = new XmlSerializer(typeof(T));
 		//	using (Stream stream = File.Create(fileName))
 		//		xmlSerializer.Serialize(stream, obiekt);
 		//}
@@ -137,9 +137,9 @@ namespace MovierGit.Classes
 		//public static T Deserialize<T>(string fileName) where T : new()
 		//{
 		//	T obiekt = new T();
-		//	XmlSerializer xmlSerializer = new XmlSerializer(typeof(T));
+		//	var xmlSerializer = new XmlSerializer(typeof(T));
 		//	using (Stream stream = File.OpenRead(fileName))
-		//		obiekt = (T)xmlSerializer.Deserialize(stream);
+		//		obiekt = (T) xmlSerializer.Deserialize(stream);
 		//	return obiekt;
 		//}
 	}

@@ -14,6 +14,7 @@ namespace MovierGit
 			InitializeComponent();
 			InitialApplicationSettings();
 		}
+
 		ApplicationSettings _applicationSettings;
 		List<RadioButton> _radioButtonsList = new List<RadioButton>();
 		Film _movie;
@@ -59,7 +60,7 @@ namespace MovierGit
 		private static Task<string> GetStringPage(string www)
 		{
 			return Task.Run(() =>
-			Extensions.GetPage(www)
+				Extensions.GetPage(www)
 			);
 		}
 
@@ -80,7 +81,9 @@ namespace MovierGit
 				if (allVersions.Length < 1)
 				{
 					var filmCode = Extensions.GetAddressLastSequence(Address_portal_tb.Text);
-					allVersions = lines.Where(a => a.StartsWith(Global.LongPrefix) && a.Contains(filmCode) && a.Length < 55).Distinct().ToArray();
+					allVersions = lines
+						.Where(a => a.StartsWith(Global.LongPrefix) && a.Contains(filmCode) && a.Length < 55).Distinct()
+						.ToArray();
 					if (allVersions.Length < 1)
 						return;
 				}
