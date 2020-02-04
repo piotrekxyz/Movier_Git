@@ -1,11 +1,11 @@
-﻿using Movier_Git.Classes;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using MovierGit.Classes;
 
-namespace Movier_Git
+namespace MovierGit
 {
 	public partial class MainWindow : Window
 	{
@@ -14,72 +14,73 @@ namespace Movier_Git
 			InitializeComponent();
 			InitialApplicationSettings();
 		}
-		ApplicationSettings applicationSettings;
-		List<RadioButton> radioButtonsList = new List<RadioButton>();
-		Film movie;
+		ApplicationSettings _applicationSettings;
+		List<RadioButton> _radioButtonsList = new List<RadioButton>();
+		Film _movie;
 
 		public void InitialApplicationSettings()
 		{
-			applicationSettings = Extensions.Deserialize(Global.settings);
-			applicationSettings = applicationSettings ?? new ApplicationSettings(Global.chrome86);
+			_applicationSettings = Extensions.Deserialize(Global.Settings);
+			_applicationSettings = _applicationSettings ?? new ApplicationSettings(Global.Chrome86);
 		}
 
-		async void Go_bt_Click(object sender, RoutedEventArgs e)
+		private async void Go_bt_Click(object sender, RoutedEventArgs e)
 		{
-			string portal = Address_portal_tb.Text;
+			var portal = Address_portal_tb.Text;
 			if (string.IsNullOrEmpty(portal) || portal.Length < 27)
 				return;
-			CleanGUI();
+			CleanGui();
 			Go_bt.IsEnabled = false;
-			movie = new Film(portal);
+			_movie = new Film(portal);
 			await GetAllVersions();
 			MakeRadioButtons();
 			ShowAllVersions();
 			Go_bt.IsEnabled = true;
 		}
 
-		void ShowAllVersions()
+		private void ShowAllVersions()
 		{
-			if (radioButtonsList.Count < 1)
+			if (_radioButtonsList.Count < 1)
 			{
 				Info_lb.Content = Properties.Resources.DownloadingError;
 				return;
 			}
-			radioButtonsList.ForEach(rb => StackPanel1.Children.Add(rb));
-			Info_lb.Content = $"Znalezione wersje: {radioButtonsList.Count}";
+			_radioButtonsList.ForEach(rb => StackPanel1.Children.Add(rb));
+			Info_lb.Content = $"Znalezione wersje: {_radioButtonsList.Count}";
 		}
 
-		void CleanGUI()
+		private void CleanGui()
 		{
-			radioButtonsList.Clear();
+			_radioButtonsList.Clear();
 			StackPanel1.Children.Clear();
 			Info_lb.Content = "";
 		}
 
-		Task<string> GetStringPage(string www)
+		private static Task<string> GetStringPage(string www)
 		{
 			return Task.Run(() =>
 			Extensions.GetPage(www)
 			);
 		}
 
-		async Task GetAllVersions()
+		private async Task GetAllVersions()
 		{
-			string page = await GetStringPage(movie.addressPortal);
+			var page = await GetStringPage(_movie.AddressPortal);
 			if (page == null)
 				return;
 
-			string[] lines = page.Split('"').Where(a => a.StartsWith(Global.longPrefix)).Distinct().ToArray();
-			string[] allVersions = lines.Where(a => a.Contains("wersja") && a.Length < 55).Distinct().ToArray();
+			var lines = page.Split('"').Where(a => a.StartsWith(Global.LongPrefix)).Distinct().ToArray();
+			var allVersions = lines.Where(a => a.Contains("wersja") && a.Length < 55).Distinct().ToArray();
 
 			if (allVersions.Length < 1)
 			{
-				string[] incomplete_versions = page.Split('"').Where(a => a.StartsWith("/video") && a.Contains("wersja") && a.Length < 35).Distinct().ToArray();
-				allVersions = incomplete_versions.Select(a => a = Global.shortPrefix + a).ToArray();
+				var incompleteVersions = page.Split('"')
+					.Where(a => a.StartsWith("/video") && a.Contains("wersja") && a.Length < 35).Distinct().ToArray();
+				allVersions = incompleteVersions.Select(a => a = Global.ShortPrefix + a).ToArray();
 				if (allVersions.Length < 1)
 				{
-					string filmCode = Extensions.GetAddressLastSequence(Address_portal_tb.Text);
-					allVersions = lines.Where(a => a.StartsWith(Global.longPrefix) && a.Contains(filmCode) && a.Length < 55).Distinct().ToArray();
+					var filmCode = Extensions.GetAddressLastSequence(Address_portal_tb.Text);
+					allVersions = lines.Where(a => a.StartsWith(Global.LongPrefix) && a.Contains(filmCode) && a.Length < 55).Distinct().ToArray();
 					if (allVersions.Length < 1)
 						return;
 				}
@@ -87,60 +88,58 @@ namespace Movier_Git
 			await GetCryptoVersions(allVersions);
 		}
 
-		async Task GetCryptoVersions(string[] versions)
+		private async Task GetCryptoVersions(string[] versions)
 		{
-			string page = null;
-			foreach (string one_version in versions)
+			foreach (var oneVersion in versions)
 			{
-				page = await GetStringPage(one_version);
-				string[] addresses = (page.Split('"').Where(x => x.Contains(Global.protocol)).Distinct()).ToArray();
+				var page = await GetStringPage(oneVersion);
+				var addresses = page.Split('"').Where(x => x.Contains(Global.Protocol)).Distinct().ToArray();
 				if (addresses.Length < 1)
 					continue;
-				string crypto_address = addresses.First().Replace("\\/", "/");
-				string decode_address = Extensions.DecodeOneVersion(crypto_address);
-				string name = Extensions.SetVersionsNames(one_version);
-				movie.versions.Add(new Version(name, one_version, crypto_address, decode_address));
+				var cryptoAddress = addresses.First().Replace("\\/", "/");
+				var decodeOneVersion = Extensions.DecodeOneVersion(cryptoAddress);
+				var name = Extensions.SetVersionsNames(oneVersion);
+				_movie.Versions.Add(new Version(name, oneVersion, cryptoAddress, decodeOneVersion));
 			}
 		}
 
-		void MakeRadioButtons()
+		private void MakeRadioButtons()
 		{
-			if (movie.versions.Count < 1)
+			if (_movie.Versions.Count < 1)
 				return;
-			RadioButton radioButton;
-			int margin_top = 10, margin = 5;
+			int marginTop = 10, margin = 5;
 			IList<RadioButton> localRadioButtonsList = new List<RadioButton>();
 
-			foreach (Version oneVersion in movie.versions)
+			foreach (Version oneVersion in _movie.Versions)
 			{
-				radioButton = new RadioButton
+				var radioButton = new RadioButton
 				{
 					Name = "_" + oneVersion.Name + "_radioButton",
 					Content = oneVersion.Name,
-					Margin = new Thickness(margin, margin_top, margin, margin)
+					Margin = new Thickness(margin, marginTop, margin, margin)
 				};
-				if (movie.versions.Last() == oneVersion)
+				if (_movie.Versions.Last() == oneVersion)
 					radioButton.IsChecked = true;
 
 				localRadioButtonsList.Add(radioButton);
 			}
-			radioButtonsList = localRadioButtonsList.Reverse().ToList();
+			_radioButtonsList = localRadioButtonsList.Reverse().ToList();
 		}
 
 		private void Paste_bt_Click(object sender, RoutedEventArgs e)
 		{
 			Address_portal_tb.Text = Clipboard.GetText();
-			CleanGUI();
+			CleanGui();
 		}
 
 		private void Open_bt_Click(object sender, RoutedEventArgs e)
 		{
 			foreach (RadioButton radioButton in StackPanel1.Children)
 			{
-				if (radioButton.IsChecked.Value)
+				if (radioButton.IsChecked != null && radioButton.IsChecked.Value)
 				{
-					string film = movie.versions.Where(x => x.Name == radioButton.Content.ToString()).First().DecodeVersion;
-					Extensions.OpenFilm(film, applicationSettings.Programs);
+					var film = _movie.Versions.First(x => x.Name == radioButton.Content.ToString()).DecodeVersion;
+					Extensions.OpenFilm(film, _applicationSettings.Programs);
 					return;
 				}
 			}
@@ -150,9 +149,9 @@ namespace Movier_Git
 		{
 			foreach (RadioButton radioButton in StackPanel1.Children)
 			{
-				if (radioButton.IsChecked.Value)
+				if (radioButton.IsChecked != null && radioButton.IsChecked.Value)
 				{
-					string film = movie.versions.Where(x => x.Name == radioButton.Content.ToString()).First().DecodeVersion;
+					var film = _movie.Versions.First(x => x.Name == radioButton.Content.ToString()).DecodeVersion;
 					Clipboard.SetText(film);
 					return;
 				}

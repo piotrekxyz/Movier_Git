@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Movier_Git.Properties {
+namespace MovierGit.Properties {
     using System;
     
     

@@ -1,16 +1,16 @@
 ﻿using System.Collections.Generic;
 
-namespace Movier_Git.Classes
+namespace MovierGit.Classes
 {
-	class Film
+	internal class Film
 	{
-		public string addressPortal;
-		public IList<Version> versions = new List<Version>();
+		public string AddressPortal { get; set; }
+		public IList<Version> Versions = new List<Version>();
 
 		//public Film(string addressPortal) => this.addressPortal = addressPortal;
 		public Film(string addressPortal)
 		{
-			this.addressPortal = addressPortal;
+			AddressPortal = addressPortal;
 		}
 	}
 }

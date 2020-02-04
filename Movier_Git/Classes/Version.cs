@@ -1,6 +1,6 @@
-﻿namespace Movier_Git.Classes
+﻿namespace MovierGit.Classes
 {
-	class Version
+	internal class Version
 	{
 		public string Name { get; set; }
 		public string Address { get; set; }
