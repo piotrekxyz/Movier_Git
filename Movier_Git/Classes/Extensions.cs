@@ -6,6 +6,7 @@ using System.Net;
 using System.Text;
 using System.Windows;
 using System.Xml.Serialization;
+using Movier_Git.Properties;
 
 namespace Movier_Git.Classes
 {
@@ -36,7 +37,7 @@ namespace Movier_Git.Classes
 				}
 				catch (Exception ex)
 				{
-					MessageBox.Show(string.Format("Problem z pobraniem strony: {0}\n{1}", www, ex));
+					MessageBox.Show($"Problem z pobraniem strony: {www}\n{ex}");
 					return null;
 				}
 			}
@@ -62,7 +63,7 @@ namespace Movier_Git.Classes
 		static public string SetVersionsNames(string version)
 		{
 			if (!version.Contains("wersja"))
-				return "OneVersionMovie";
+				return Resources.OneVersionMovie;
 
 			string versionName = "";
 			int last_index = version.LastIndexOf('=') + 1;

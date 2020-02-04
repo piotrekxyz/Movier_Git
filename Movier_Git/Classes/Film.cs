@@ -7,6 +7,10 @@ namespace Movier_Git.Classes
 		public string addressPortal;
 		public IList<Version> versions = new List<Version>();
 
-		public Film(string addressPortal) => this.addressPortal = addressPortal;
+		//public Film(string addressPortal) => this.addressPortal = addressPortal;
+		public Film(string addressPortal)
+		{
+			this.addressPortal = addressPortal;
+		}
 	}
 }

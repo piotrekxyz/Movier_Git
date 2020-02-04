@@ -21,7 +21,7 @@ namespace Movier_Git
 		public void InitialApplicationSettings()
 		{
 			applicationSettings = Extensions.Deserialize(Global.settings);
-			applicationSettings = applicationSettings is null ? new ApplicationSettings(Global.chrome86) : applicationSettings;
+			applicationSettings = applicationSettings ?? new ApplicationSettings(Global.chrome86);
 		}
 
 		async void Go_bt_Click(object sender, RoutedEventArgs e)
@@ -42,11 +42,11 @@ namespace Movier_Git
 		{
 			if (radioButtonsList.Count < 1)
 			{
-				Info_lb.Content = "NIE UDAŁO SIĘ POBRAĆ !!";
+				Info_lb.Content = Properties.Resources.DownloadingError;
 				return;
 			}
 			radioButtonsList.ForEach(rb => StackPanel1.Children.Add(rb));
-			Info_lb.Content = string.Format("Znalezione wersje: {0}", radioButtonsList.Count);
+			Info_lb.Content = $"Znalezione wersje: {radioButtonsList.Count}";
 		}
 
 		void CleanGUI()
@@ -66,7 +66,7 @@ namespace Movier_Git
 		async Task GetAllVersions()
 		{
 			string page = await GetStringPage(movie.addressPortal);
-			if (page is null)
+			if (page == null)
 				return;
 
 			string[] lines = page.Split('"').Where(a => a.StartsWith(Global.longPrefix)).Distinct().ToArray();
