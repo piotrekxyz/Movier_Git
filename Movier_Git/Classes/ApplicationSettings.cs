@@ -6,6 +6,7 @@ namespace MovierGit.Classes
 	{
 		public List<string> Programs { get; set; } = new List<string>();
 
+		public ApplicationSettings() { }	// musi być
 		public ApplicationSettings(string program)
 		{
 			Programs.Add(program);

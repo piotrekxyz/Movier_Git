@@ -29,6 +29,7 @@ namespace MovierGit.Classes
 			{
 				try
 				{
+					//client.Headers.Add("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;)");
 					var pageData = client.DownloadData(www);
 					page = Encoding.Default.GetString(pageData);
 				}
